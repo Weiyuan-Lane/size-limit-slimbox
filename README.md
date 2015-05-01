@@ -1,6 +1,6 @@
 Prelude
 =========
-This is an extension to Christophe Beyls's Slimbox 2 implementation, featuring an additional option to allow for limitations of the displayed image when Slimbox loads so that it doesn't load past the current screen width.
+This is an extension to Christophe Beyls's Slimbox 2 implementation, featuring an additional option to allow for limitations of the displayed image when Slimbox loads so that it doesn't load past the current screen width and height.
 
 Please refer to the [original wiki page](https://github.com/cbeyls/slimbox/wiki/) for the in depth explanation on how slimbox works.
 
