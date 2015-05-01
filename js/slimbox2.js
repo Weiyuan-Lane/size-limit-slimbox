@@ -65,7 +65,8 @@
 			counterText: "Image {x} of {y}",	// Translate or change as you wish, or set it to false to disable counter text for image groups
 			closeKeys: [27, 88, 67],		// Array of keycodes to close Slimbox, default: Esc (27), 'x' (88), 'c' (67)
 			previousKeys: [37, 80],			// Array of keycodes to navigate to the previous image, default: Left arrow (37), 'p' (80)
-			nextKeys: [39, 78]			// Array of keycodes to navigate to the next image, default: Right arrow (39), 'n' (78)
+			nextKeys: [39, 78],			// Array of keycodes to navigate to the next image, default: Right arrow (39), 'n' (78)
+			limit: true                             // Allows for limiting of image to the screen width during loading
 		}, _options);
 
 		// The function is called for a single image, with URL and Title as first two arguments
@@ -191,8 +192,9 @@
 	function animateBox() {
 		center.className = "";
 		$(image).css({backgroundImage: "url(" + activeURL + ")", visibility: "hidden", display: ""});
-		$(sizer).width(preload.width);
-		$([sizer, prevLink, nextLink]).height(preload.height);
+		var sizes = regulateImageBackgroundSize();
+		$(sizer).width(sizes[0]);
+		$([sizer, prevLink, nextLink]).height(sizes[1]);
 
 		$(caption).html(images[activeImage][1] || "");
 		$(number).html((((images.length > 1) && options.counterText) || "").replace(/{x}/, activeImage + 1).replace(/{y}/, images.length));
@@ -238,6 +240,35 @@
 		}
 
 		return false;
+	}
+
+	//Regulate the background-size of image and return the size set
+	function regulateImageBackgroundSize(){
+		//Add a max feature to prevent negative weights
+		var widthLimiter = Math.max(0, win.width() - 100);
+		var heightLimiter = Math.max(0, win.height() - 200);
+            
+		var imageWidth = preload.width;
+		var imageHeight = preload.height;
+                
+		if (options.limit) {
+			//Set width of image under limit while retaining the ratio
+			if (widthLimiter < imageWidth) {
+				var newWidth = widthLimiter;
+				imageHeight = imageHeight * newWidth / imageWidth;
+				imageWidth = newWidth;
+			}
+			//Set height of image under limit while retaining the ratio
+			if (heightLimiter < imageHeight) {
+				var newHeight = heightLimiter;
+				imageWidth = imageWidth * newHeight / imageHeight;
+				imageHeight = newHeight;
+			}
+
+			$(image).css({"background-size": imageWidth+"px "+imageHeight+"px"});
+		}
+                
+		return [imageWidth, imageHeight];
 	}
 
 })(jQuery);
